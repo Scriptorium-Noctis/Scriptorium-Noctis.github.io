@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101315">
+  <title>SigilRPG Table Helper</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand-block">
+      <span class="eyebrow">SigilRPG</span>
+      <strong id="headerTitle">Roster</strong>
+    </div>
+    <div class="header-actions">
+      <label class="locale-control">
+        <span class="sr-only">Language</span>
+        <select id="localeSelect" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="pl">PL</option>
+        </select>
+      </label>
+      <button id="addButton" class="icon-button" type="button" aria-label="Add character">+</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section id="rosterPane" class="roster-pane panel" aria-labelledby="rosterTitle">
+      <div class="panel-heading roster-heading">
+        <div>
+          <span class="eyebrow">Combat</span>
+          <h1 id="rosterTitle">Roster</h1>
+        </div>
+        <div class="round-actions">
+          <button id="rosterAddButton" class="button button-subtle" type="button">+ Character</button>
+          <button id="sortInitiativeButton" class="button button-subtle" type="button">Sort initiative</button>
+          <button id="endRoundButton" class="button button-primary" type="button">End round</button>
+        </div>
+      </div>
+
+      <div id="roundSummary" class="round-summary"></div>
+      <div id="rosterList" class="roster-list" aria-live="polite"></div>
+      <div id="emptyRoster" class="empty-state">
+        <strong>No characters</strong>
+        <span>Add one from a template or create a blank character.</span>
+      </div>
+    </section>
+
+    <section id="detailPane" class="detail-pane panel" aria-label="Character detail">
+      <div id="detailEmpty" class="empty-state detail-empty">
+        <strong>Select a character</strong>
+        <span>Open a character from the roster to inspect stats, equipment, and guarantees.</span>
+      </div>
+      <div id="detailContent" hidden>
+        <div class="detail-toolbar">
+          <button id="backToRosterButton" class="button mobile-only" type="button">← Roster</button>
+          <div class="detail-title-block">
+            <span class="eyebrow">Character</span>
+            <input id="detailNameInput" class="detail-name-input" maxlength="40" aria-label="Character name">
+            <div id="detailMeta" class="muted"></div>
+          </div>
+          <button id="fullHpButton" class="button button-subtle" type="button">GM reset</button>
+        </div>
+
+        <section class="detail-section detail-initiative-section mobile-only-flex">
+          <label class="initiative-detail-control"><span>Initiative</span><input id="detailInitiativeInput" type="number" inputmode="numeric"></label>
+          <button id="detailEndRoundButton" class="button button-primary" type="button">End round</button>
+        </section>
+
+        <section class="detail-section">
+          <div class="inline-actions">
+            <button id="damageHelperButton" class="button button-primary" type="button">DM damage helper</button>
+            <button id="recoveryButton" class="button" type="button">Recovery</button>
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <div class="section-title-row">
+            <h2>Attributes</h2>
+            <button id="toggleStatEditButton" class="text-button" type="button">Edit maximums</button>
+          </div>
+          <div id="detailStats" class="detail-stats"></div>
+        </section>
+
+        <section class="detail-section">
+          <div class="section-title-row">
+            <div>
+              <h2>Combat profile</h2>
+              <p>Calculated from current attributes and equipped items.</p>
+            </div>
+          </div>
+          <div id="combatProfile" class="profile-grid"></div>
+        </section>
+
+        <section class="detail-section">
+          <div class="section-title-row">
+            <div>
+              <h2>Equipment</h2>
+              <p>Dodge limit caps a Dodge roll at that number; Brace guarantee is the minimum a Brace roll can produce. Both default to 6 for every plating type.</p>
+            </div>
+            <div class="inline-actions">
+              <button id="addWeaponButton" class="button button-subtle" type="button">+ Weapon</button>
+              <button id="addArmorButton" class="button button-subtle" type="button">+ Plating</button>
+            </div>
+          </div>
+          <div id="equipmentList" class="equipment-list"></div>
+        </section>
+
+        <section class="detail-section danger-zone">
+          <button id="deleteCharacterButton" class="text-button danger-text" type="button">Delete character</button>
+        </section>
+      </div>
+    </section>
+
+    <section id="actionPane" class="action-pane panel" aria-labelledby="actionTitle" hidden>
+      <div class="panel-heading">
+        <div>
+          <span class="eyebrow">Physical play</span>
+          <h1 id="actionTitle">Action Composer</h1>
+        </div>
+      </div>
+
+      <div class="composer-grid">
+        <section class="composer-section">
+          <label class="field-label">Character
+            <select id="composerCharacter"></select>
+          </label>
+          <label class="field-label">Weapon for Base Attack
+            <select id="composerWeapon"></select>
+          </label>
+          <button id="includeAttackButton" class="choice-card active" type="button" aria-pressed="true">
+            <strong>Base Attack</strong><span>Include weapon or unarmed attack · 1 AP · 2 potential</span>
+          </button>
+        </section>
+
+        <section class="composer-section">
+          <div class="section-title-row"><h2>Attack prefixes</h2><button id="clearComposerButton" class="text-button" type="button">Clear prefixes and words</button></div>
+          <p>Prefixes modify a Base Attack or an attack-like Shape.</p>
+          <div id="prefixGrid" class="choice-grid"></div>
+        </section>
+
+        <section class="composer-section composer-result">
+          <span class="eyebrow">Result</span>
+          <h2 id="actionName">Attack</h2>
+          <div id="actionMetrics" class="metric-strip"></div>
+          <ul id="actionEffects" class="effect-list" aria-live="polite"></ul>
+        </section>
+
+        <details class="composer-section words-section">
+          <summary><strong>Words of Power</strong><span>Compose a spell or add a Source Smite</span></summary>
+          <p>For a spell without a weapon attack, turn Base Attack off. Attack-like Shapes can use prefixes; they are not Source Smites.</p>
+          <p>Word effects are working drafts. Shape combinations depend on the fiction and table agreement; this composer does not decide their compatibility.</p>
+          <div class="word-toolbar"><button id="clearWordsButton" class="text-button" type="button">Clear words</button></div>
+          <div id="wordCategories"></div>
+        </details>
+      </div>
+    </section>
+
+    <section id="guidePane" class="guide-pane panel" aria-labelledby="guideTitle" hidden>
+      <div class="panel-heading"><div><span class="eyebrow">Reference</span><h1 id="guideTitle">Combat Guide</h1></div></div>
+      <div class="guide-layout">
+        <article class="guide-card">
+          <span class="eyebrow">1 · Build</span>
+          <h2>Prefixes modify one attack</h2>
+          <div class="formula"><span>Attack</span><b>1 AP · 2 potential</b><span>+ Power</span><b>+1 AP · +1 potential</b><span>+ Precision</span><b>+1 AP · +1 potential</b><strong>= 3 AP · 4 potential</strong></div>
+          <p>Prefixes are not separate attacks. Three basic attacks are three independent accuracy rolls and three independent damage chains.</p>
+        </article>
+        <article class="guide-card">
+          <span class="eyebrow">2 · Resolve</span>
+          <h2>Potential is a ceiling</h2>
+          <div class="chain"><span>Accuracy vs DEX</span><i>success → wound</i><span>Higher of Accuracy/Impact vs CON</span><i>success → wound</i><span>Higher of Accuracy/Impact vs next defense</span><i class="stop">tie/win → stop</i></div>
+          <p>Each potential is one contest and at most one wound. The chain ends as soon as the defender wins or ties.</p>
+        </article>
+        <article class="guide-card">
+          <span class="eyebrow">3 · Apply</span>
+          <h2>Wounds wait for round end</h2>
+          <div class="pending-demo"><b>d10</b><span>+2 pending</span><b>→ d6</b></div>
+          <p>Queue wounds during the round. Attribute reductions take effect only after End round, preventing early burst damage from weakening later defenses in the same round.</p>
+        </article>
+        <article class="guide-card">
+          <span class="eyebrow">Prefixes</span>
+          <h2>Quick reference</h2>
+          <dl class="rule-list">
+            <div><dt>Power</dt><dd>+1 potential; accuracy die +1 tier.</dd></div>
+            <div><dt>Precision</dt><dd>+1 potential; advantage on accuracy; one attribute may be wounded twice.</dd></div>
+            <div><dt>Dashing</dt><dd>+1 potential; move potential × 5 m as part of the attack.</dd></div>
+            <div><dt>Sweep</dt><dd>Multiple targets; no extra potential.</dd></div>
+          </dl>
+        </article>
+        <article class="guide-card wide-card">
+          <span class="eyebrow">Important</span>
+          <h2>Table reminders</h2>
+          <ul class="effect-list">
+            <li>Ties favor the defender.</li>
+            <li>Losing a melee accuracy contest causes 1 chip damage.</li>
+            <li>Normally one attack cannot wound the same attribute twice.</li>
+            <li>From the second stage of the damage chain onward, resist whichever is higher: the accuracy roll or weapon Impact.</li>
+            <li>Spellcasting accuracy uses whichever is higher: INT or AUR.</li>
+            <li>The wounded attribute follows the injury fiction; it is not automatically the defense that failed.</li>
+            <li>Quick remains undefined and is intentionally omitted.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Primary navigation">
+    <button class="nav-button active" data-view="roster" type="button"><span>☷</span><b>Roster</b></button>
+    <button class="nav-button" data-view="action" type="button"><span>✦</span><b>Actions</b></button>
+    <button class="nav-button" data-view="guide" type="button"><span>?</span><b>Guide</b></button>
+  </nav>
+
+  <dialog id="characterDialog" class="modal">
+    <form id="characterForm" method="dialog" class="modal-card">
+      <div class="section-title-row"><div><span class="eyebrow">Roster</span><h2>Add character</h2></div><button class="icon-button" value="cancel" aria-label="Close">×</button></div>
+      <div class="template-grid" id="templateGrid"></div>
+      <label class="field-label">Name<input id="newCharacterName" maxlength="40" autocomplete="off" placeholder="Character name"></label>
+      <label class="field-label compact-field">Copies<input id="newCharacterCount" type="number" min="1" max="20" value="1"></label>
+      <div id="newCharacterStats" class="creation-stats"></div>
+      <div class="modal-actions"><button class="button" value="cancel" type="button" id="cancelCharacterButton">Cancel</button><button class="button button-primary" type="submit">Add to roster</button></div>
+    </form>
+  </dialog>
+
+  <script src="locale.js"></script>
+  <script src="composer-locale.js"></script>
+  <script src="recovery-locale.js"></script>
+  <script src="damage-locale.js"></script>
+  <script src="app.js"></script>
+  <script src="damage.js"></script>
+  <script src="recovery.js"></script>
+</body>
+</html>
