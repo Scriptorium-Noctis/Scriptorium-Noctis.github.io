@@ -1,28 +1,20 @@
 site_name: Scriptorium Noctis
 site_description: "A compendium of worlds, characters, and tools for RPGs."
 site_url: https://scriptorium-noctis.github.io
+
 theme:
   name: material
-  language: en
-  palette:
-    - scheme: slate
-      primary: indigo
-      accent: amber
-      toggle:
-        icon: material/weather-night
-        name: Switch to light mode
-    - scheme: default
-      primary: indigo
-      accent: amber
-      toggle:
-        icon: material/white-balance-sunny
-        name: Switch to dark mode
   features:
-    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
     - navigation.expand
+    - search.suggest
     - search.highlight
-    - content.code.copy
-    - content.action.edit
+    - toc.integrate
+  palette:
+    scheme: slate
+    primary: indigo
+    accent: deep purple
 extra:
   social:
     - icon: fontawesome/brands/github
@@ -30,16 +22,25 @@ extra:
 nav:
   - Home: index.md
   - Belafa:
-      - "Overview": campaigns/overview.md
-      - "City: Artyn": campaigns/artyn.md
+      - "Overview": belafa/overview.md
+      - "City: Artyn": belafa/artyn.md
   - Player Characters:
-      - "Wood Elf Druid": playter-characters/mycorill.md
+      - "Wood Elf Druid": player-characters/mycorill.md
   - Tools:
       - Dice Roller: tools/dice.md
-markdown_extensions:
-  - admonition
-  - codehilite
-  - toc:
-      permalink: true
+
 plugins:
   - search
+  - autorefs
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - tables
+  - footnotes
+  - codehilite
+  - def_list
+  - attr_list
+  - md_in_html
+
