@@ -208,6 +208,8 @@ function resolveWordComposition(words,hasBaseAttack){
   if(primaries.length>1)diagnostics.push(t('Competing primary delivery Shapes: {selected}. Tracker ruling: {winner} wins by stable catalog priority; the others modify the endpoint only where their interaction permits.',{selected:primaries.map(x=>t(x.name)).join(', '),winner:t(primary.name)}));
   if(shapes.some(x=>['spiral','flat'].includes(x.id))&&shapes.length===1)diagnostics.push(t('{shape} requires another Shape to modify.',{shape:t(shapes[0].name)}));
   if(sources.some(x=>x.id==='echoes')&&words.length===1)diagnostics.push(t('Echoes requires an identifiable earlier spell trace; choose one at the table.'));
+  if(hasBaseAttack&&shapes.length)diagnostics.push(t('Weapon or unarmed Attack carries Source Words cleanly, but not Shape Words: {shapes} still need their own spell delivery. Shown as a warning, not blocked.',{shapes:shapes.map(x=>t(x.name)).join(', ')}));
+  if(hasBaseAttack&&mastery.length)diagnostics.push(t('Weapon or unarmed Attack carries Source Words cleanly, but not Mastery Words: {mastery} does not act through the weapon hit. Shown as a warning, not blocked.',{mastery:mastery.map(x=>t(x.name)).join(', ')}));
   let mode='touch';if(hasBaseAttack)mode='smite';else if(primary)mode='attack';else if(containers.length)mode='area';
   let delivery,targets,resolution;
   if(hasBaseAttack){delivery=t('Weapon or unarmed hit carries the selected Sources.');targets=t('One attack target; weapon range applies.');resolution=t('Roll weapon accuracy. Source Smite is part of that hit.');}

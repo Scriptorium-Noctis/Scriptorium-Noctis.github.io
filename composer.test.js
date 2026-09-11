@@ -203,6 +203,17 @@ test('Hold Still reduces only an existing caster check and Mabufa explains tempo
   assert.match(h.node('#masteryEffects').children.map(x=>x.textContent).join(' '),/Transfer 1 Mana OR.*temporary.*d12 → d20/);
 });
 
+test('Weapon Attack combined with Shape or Mastery Words warns without blocking totals',()=>{
+  const h=setup();h.run("selectedWords=new Set(['source:fire','shape:barrier']);renderComposer()");
+  assert.match(h.metrics()[0],/>3</);
+  assert.ok(h.node('#composerDiagnostics').children.some(x=>/not Shape Words: Barrier \/ Shield/.test(x.textContent)));
+  const h2=setup();h2.run("selectedWords=new Set(['source:fire','mastery:hold']);renderComposer()");
+  assert.match(h2.metrics()[0],/>3</);
+  assert.ok(h2.node('#composerDiagnostics').children.some(x=>/not Mastery Words: Hold Still/.test(x.textContent)));
+  const h3=setup();h3.run("selectedWords=new Set(['source:fire','source:thunder']);renderComposer()");
+  assert.equal(h3.node('#composerDiagnostics').children.length,0);
+});
+
 test('Polish composer supplement translates all new wording without replacing existing locale entries',()=>{
   const context=vm.createContext({window:{}});
   vm.runInContext(fs.readFileSync(path.join(__dirname,'locale.js'),'utf8'),context);
