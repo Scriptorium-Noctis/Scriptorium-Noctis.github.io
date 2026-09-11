@@ -9,6 +9,24 @@
 .modal-card h2,.modal-card p{margin:0}
 .modal-card>select{background:var(--surface3);border:1px solid var(--line);border-radius:8px;padding:8px}
 button:disabled{opacity:.45;cursor:not-allowed}
+/* Recovery mirrors the sheet, with all three rest toggles kept in one row. */
+.recovery-stage-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.recovery-stage{min-width:0;padding:8px 4px;background:var(--surface2);border:1px solid var(--line);border-radius:9px;text-align:center}
+.recovery-stage.active{border-color:var(--accent)}
+.recovery-stage-toggle{display:flex;align-items:center;justify-content:center;gap:4px;min-height:32px;white-space:nowrap;font-size:13px;font-weight:750;cursor:pointer}
+.recovery-stage-toggle input{width:14px;height:14px;flex:0 0 14px;margin:0;accent-color:var(--accent)}
+.recovery-stage small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+#recoveryStats{margin-top:0;grid-template-columns:repeat(6,minmax(0,1fr))}
+.recovery-preview{display:block;min-height:28px;margin-top:3px;font-size:10px;color:var(--muted)}
+.recovery-stats .stat-tile{min-width:0;padding:10px 5px}
+.recovery-stats .stat-tile.recovering .stat-die{color:var(--accent)}
+.recovery-stats .stat-controls{gap:3px}
+.recovery-stats .stat-controls button{padding:3px;min-width:0}
+.recovery-stats .stat-controls button:first-child{flex:0 0 25px;font-size:16px}
+#recoveryDialog details{font-size:12px;color:var(--muted)}
+#recoveryDialog details summary{cursor:pointer}
+#recoveryDialog details p{margin-top:8px}
+@media(max-width:600px){#recoveryStats{grid-template-columns:repeat(3,minmax(0,1fr))}.recovery-stage-toggle{font-size:clamp(9px,2.45vw,13px)}.recovery-stage-row{gap:4px}.recovery-stage small{font-size:10px}}
 /* Usability refinements */
 .roster-list{overflow:hidden}
 .roster-name-line{display:flex;align-items:center;gap:5px;min-width:0}

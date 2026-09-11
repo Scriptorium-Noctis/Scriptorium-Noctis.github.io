@@ -129,9 +129,10 @@
           <label class="field-label">Weapon for Base Attack
             <select id="composerWeapon"></select>
           </label>
-          <button id="includeAttackButton" class="choice-card active" type="button" aria-pressed="true">
+          <button id="includeAttackButton" class="choice-card active" type="button" aria-pressed="true" aria-describedby="baseAttackNote">
             <strong>Base Attack</strong><span>Include weapon or unarmed attack · 1 AP · 2 potential</span>
           </button>
+          <p id="baseAttackNote">Base Attack preference is remembered while attack-like Shapes replace it.</p>
         </section>
 
         <section class="composer-section">
@@ -143,13 +144,17 @@
         <section class="composer-section composer-result">
           <span class="eyebrow">Result</span>
           <h2 id="actionName">Attack</h2>
+          <p id="actionIncantation" hidden></p>
           <div id="actionMetrics" class="metric-strip"></div>
           <ul id="actionEffects" class="effect-list" aria-live="polite"></ul>
         </section>
 
         <details class="composer-section words-section">
           <summary><strong>Words of Power</strong><span>Compose a spell or add a Source Smite</span></summary>
-          <p>For a spell without a weapon attack, turn Base Attack off. Attack-like Shapes can use prefixes; they are not Source Smites.</p>
+          <p>Attack-like Shapes replace Base Attack: no base AP/potential, weapon accuracy/Impact, or Smite discount.</p>
+          <p>For other standalone spells, turn Base Attack off. Removing the last attack-like Shape restores your saved Base Attack preference.</p>
+          <p>Only a single Source with Base Attack and no other Words gets the Smite AP exception. Multiple Sources each cost 1 AP.</p>
+          <p>Names use readable localized components in fixed order; weapon Sources are slash-separated. Alternative incantations use invented short prefix words as tracker flavor, not canonical rules.</p>
           <p>Word effects are working drafts. Shape combinations depend on the fiction and table agreement; this composer does not decide their compatibility.</p>
           <div class="word-toolbar"><button id="clearWordsButton" class="text-button" type="button">Clear words</button></div>
           <div id="wordCategories"></div>
@@ -185,6 +190,8 @@
             <div><dt>Power</dt><dd>+1 potential; accuracy die +1 tier.</dd></div>
             <div><dt>Precision</dt><dd>+1 potential; advantage on accuracy; one attribute may be wounded twice.</dd></div>
             <div><dt>Dashing</dt><dd>+1 potential; move potential × 5 m as part of the attack.</dd></div>
+            <div><dt>Disarming</dt><dd>1 AP · +1 potential. On a failed enemy Brace, the enemy drops a held item. The normal damage chain is unchanged.</dd></div>
+            <div><dt>Knockback</dt><dd>1 AP · +1 potential. On a failed enemy Brace, knock the target back Potential × 5 m. The normal damage chain is unchanged.</dd></div>
             <div><dt>Sweep</dt><dd>Multiple targets; no extra potential.</dd></div>
           </dl>
         </article>
@@ -199,6 +206,11 @@
             <li>Spellcasting accuracy uses whichever is higher: INT or AUR.</li>
             <li>The wounded attribute follows the injury fiction; it is not automatically the defense that failed.</li>
             <li>Quick remains undefined and is intentionally omitted.</li>
+            <li>Attack-like Shapes replace Base Attack: no base AP/potential, weapon accuracy/Impact, or Smite discount.</li>
+            <li>Only a single Source with Base Attack and no other Words gets the Smite AP exception. Multiple Sources each cost 1 AP.</li>
+            <li>Precision + Lightning + Fire + Bolt = 4 AP, with no Base Attack.</li>
+            <li>Word effects are working drafts. Shape combinations depend on the fiction and table agreement; this composer does not decide their compatibility.</li>
+            <li>Names use readable localized components in fixed order; weapon Sources are slash-separated. Alternative incantations use invented short prefix words as tracker flavor, not canonical rules.</li>
           </ul>
         </article>
       </div>
