@@ -13,6 +13,9 @@ Static, single-page table companion for physical SigilRPG play.
 - Plating exposes Guarantee and Limit. Unsettled playtest defaults use d6 and remain editable.
 - Character-aware action composer for physical attacks, prefixes, equipment values, and Words of Power. Prefixes require Base Attack or an attack-like Shape; invalid combinations do not display calculated totals. Any attack-like Shape excludes Base Attack and weapon delivery: no base AP/potential, weapon accuracy/Impact, or Smite discount. Removing the last such Shape restores the saved Base Attack preference. A single Source with Base Attack and no other Words retains the existing Smite AP exception; multiple Sources each cost 1 AP. Other mixed-Shape compatibility remains a table ruling.
 - Readable, deterministic names distinguish weapon and spell delivery: **Precision Power Weapon Attack (Spear) of Lightning** versus **Precision Lightning Fire Bolt** (4 AP). Weapon Source names are slash-separated. Alternative incantations combine existing Words with invented prefix words; these are tracker flavor, not authored canon.
+- Every Word now carries structured delivery, target, area, range, duration, resistance, manifestation, interaction, and potential-policy data. The composer resolves a primary delivery, endpoint Shapes, targets/area, Source manifestations, Mastery effects, and diagnostics rather than merely concatenating labels.
+- Shape composition is layered and deterministic. A primary attack Shape such as Bolt carries container/area Shapes to its endpoint. For example, **Fire + Pillar + Bolt** rolls spell accuracy against the Bolt target, then manifests a 1 m × 5 m fiery Pillar at impact; other occupants resist against the area DC. Competing primary delivery Shapes use stable catalog priority and produce a visible diagnostic rather than an implicit result.
+- Area resistance is separate from spell accuracy and the caster’s casting check. The resistance difficulty follows total selected Word count; prefixes and AP do not increase it. The tracker calculates spell potential as **base + prefixes + Mana spent + Dust spent**, so every consumed Mana or Dust contributes 1 potential. This is explicitly displayed as a tracker ruling.
 - **Disarming** and **Knockback** each cost 1 AP and add 1 potential. Failed enemy Brace causes a held item to drop or knocks the target back total Potential × 5 meters, respectively; neither replaces normal damage-chain wounds.
 - Selected-character **DM damage helper** is **amount → preview → apply**, with no attribute-selection or Precision controls. Enter already-resolved damage, not potential. Each wound is randomly assigned to an attribute with remaining tiers after current and pending wounds; eligibility is recalculated after each assignment. Attributes at effective d4 are skipped. The same attribute may receive multiple wounds while capacity remains, so damage is never left unassigned merely because other attributes are exhausted. This helper allocates resolved damage rather than validating attack-prefix restrictions; the composer and guide retain those attack-resolution rules. Apply queues the previewed allocation without rerolling; dice still change only at End round.
 - Overflow from one hit is ignored: 3 remaining HP with 5 wounds queues at most 3 wounds, leaves the character alive at 0 HP, and ignores 2. The next separate damaging hit kills. Pending wounds count toward this threshold without reducing the dice used during the round. Death persists through reload and End round; ordinary healing and recovery do not revive a dead character.
@@ -41,6 +44,14 @@ recovery.js
 ```
 
 Keep the script order in `index.html`: locale dictionaries before `app.js`, then the damage and recovery tools. No dependencies or external services are needed.
+
+## Word resolver policy
+
+Source Words explain touch, Smite, attack, and area manifestations. Current examples include lightning arcs, ongoing fire chip attacks, Frost speed reduction, conductive Water, obscuring Shadow, outlining Light, and restorative or inverted Vital Energy. Vital Energy with Slash or Strike supports surgical removal of dead tissue before regeneration.
+
+Mastery Words remain distinct from delivery. **Mabufa** transfers 1 Mana or raises one target attribute one tier, including healing or a temporary over-maximum boost such as d12 → d20; the composer explains this but does not mutate character state. **Hold Still** costs 1 AP and no energy or potential. It deliberately exposes the caster while charging and lowers an existing caster casting check by one difficulty tier; it never lowers enemy area resistance.
+
+These detailed manifestations and automatic interactions are labeled **Tracker ruling, not canonical**. They develop incomplete authored Word notes for play assistance without editing the sibling `SigilRPG/` source.
 
 ## Pending condition decision
 

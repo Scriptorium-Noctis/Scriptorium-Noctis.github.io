@@ -72,11 +72,12 @@ test('source-only Smite retains existing AP exception, unlike attack-like Shape'
   assert.match(h.metrics()[0],/>2</);assert.ok(!h.effects().some(x=>/Source Smite/.test(x)));
 });
 
-test('Shape combinations remain selectable and are not excluded by fiction guesses',()=>{
+test('Shape combinations remain selectable and resolve with diagnostics rather than disabling choices',()=>{
   const h=setup();h.run("includesBaseAttack=false;selectedWords=new Set(['source:fire','shape:bolt','shape:barrier','shape:flat','shape:spiral']);selectedPrefixes.add('precision');renderComposer();renderWords()");
   assert.match(h.metrics()[0],/>6</);
   const buttons=h.node('#wordCategories').children.flatMap(section=>section.children[1].children);
   assert.ok(buttons.every(button=>!button.disabled));
+  assert.match(h.node('#shapeInteractions').children.map(x=>x.textContent).join(' '),/endpoint|geometry/);
 });
 
 test('readable weapon names, slash-separated Sources, and prefix order are deterministic',()=>{
@@ -154,6 +155,52 @@ test('Polish renders readable names, new prefix effects, and non-canonical incan
   assert.match(h.node('#actionIncantation').textContent,/nie kanon.*Zin Tor Nek Brom Baguaga/);
   assert.ok(h.effects().some(x=>/upuszcza trzymany przedmiot/.test(x)));
   assert.ok(h.effects().some(x=>/35 m/.test(x)));
+});
+
+test('every Word has structured resolver fields and resource potential policy',()=>{
+  const h=setup();
+  assert.equal(h.run("Object.values(WORDS).flat().every(w=>['delivery','target','area','range','duration','resist','effects','interactions','potentialPolicy'].every(k=>Object.hasOwn(w,k)))"),true);
+  assert.equal(h.run("WORDS.mastery.find(w=>w.id==='hold').mana||0"),0);
+});
+
+test('potential is exactly base plus prefixes plus consumed Mana and Dust',()=>{
+  const h=setup();h.run("includesBaseAttack=false;selectedWords=new Set(['source:fire','shape:bolt','mastery:focus','mastery:hold']);selectedPrefixes.add('power');renderComposer()");
+  assert.match(h.metrics()[0],/>5</); // four Words + one prefix; Hold Still still costs 1 AP.
+  assert.match(h.metrics()[1],/>4</); // 1 Mana + 1 Mana + 1 Dust + prefix; Hold contributes zero.
+  assert.ok(h.effects().some(x=>/Mana 2 \+ Dust 1 = 4/.test(x)));
+});
+
+test('area resistance uses total selected Word count and stays separate from casting check',()=>{
+  const h=setup();h.run("includesBaseAttack=false;selectedWords=new Set(['source:fire','shape:vortex']);renderComposer()");
+  assert.match(h.metrics()[2],/Area resistance/);
+  assert.match(h.node('#resolutionSummary').textContent,/Advanced 6/);
+  assert.ok(h.effects().some(x=>/casting check: none/i.test(x)));
+  h.run("selectedWords.add('mastery:focus');renderComposer()");
+  assert.match(h.node('#resolutionSummary').textContent,/Hard 8/);
+  assert.ok(h.effects().some(x=>/Caster casting check: Easy 4/.test(x)));
+});
+
+test('Bolt carries and places Pillar at impact with layered attack and area resolution',()=>{
+  const h=setup();h.run("includesBaseAttack=false;selectedWords=new Set(['source:fire','shape:pillar','shape:bolt']);renderComposer()");
+  assert.match(h.node('#deliverySummary').textContent,/Bolt.*primary delivery/);
+  assert.match(h.node('#targetsSummary').textContent,/impact point.*occupants/);
+  assert.match(h.node('#resolutionSummary').textContent,/spell accuracy.*Hard 8/);
+  assert.match(h.node('#sourceEffects').children[0].textContent,/Ignite the hit target/);
+});
+
+test('competing primary Shapes use stable catalog priority and expose a diagnostic',()=>{
+  const h=setup();h.run("includesBaseAttack=false;selectedWords=new Set(['source:force','shape:hammer','shape:bolt']);renderComposer()");
+  assert.match(h.node('#deliverySummary').textContent,/Bolt/);
+  assert.match(h.node('#composerDiagnostics').children[0].textContent,/Bolt wins by stable catalog priority/);
+});
+
+test('Hold Still reduces only an existing caster check and Mabufa explains temporary utility',()=>{
+  const h=setup();h.run("includesBaseAttack=false;selectedWords=new Set(['source:fire','shape:vortex','mastery:focus','mastery:hold']);renderComposer()");
+  assert.ok(h.effects().some(x=>/Caster casting check: Easy 4/.test(x)));
+  assert.match(h.node('#resolutionSummary').textContent,/Very Hard 10/); // four selected Words; Hold does not reduce resistance.
+  h.run("selectedWords=new Set(['mastery:enhancement']);renderComposer()");
+  assert.match(h.metrics()[0],/>1</);assert.match(h.metrics()[1],/>1</);
+  assert.match(h.node('#masteryEffects').children.map(x=>x.textContent).join(' '),/Transfer 1 Mana OR.*temporary.*d12 → d20/);
 });
 
 test('Polish composer supplement translates all new wording without replacing existing locale entries',()=>{

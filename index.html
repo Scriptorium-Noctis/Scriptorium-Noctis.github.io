@@ -142,11 +142,20 @@
         </section>
 
         <section class="composer-section composer-result">
-          <span class="eyebrow">Result</span>
+          <span class="eyebrow">Result · Tracker ruling, not canonical</span>
           <h2 id="actionName">Attack</h2>
           <p id="actionIncantation" hidden></p>
           <div id="actionMetrics" class="metric-strip"></div>
           <ul id="actionEffects" class="effect-list" aria-live="polite"></ul>
+          <div class="composer-resolution">
+            <section><h3>Delivery</h3><p id="deliverySummary">—</p></section>
+            <section><h3>Targets / Area</h3><p id="targetsSummary">—</p></section>
+            <section><h3>Resolution</h3><p id="resolutionSummary">—</p></section>
+            <section><h3>Source effects</h3><ul id="sourceEffects" class="effect-list"></ul></section>
+            <section><h3>Shape interactions</h3><ul id="shapeInteractions" class="effect-list"></ul></section>
+            <section><h3>Mastery</h3><ul id="masteryEffects" class="effect-list"></ul></section>
+            <section><h3>Diagnostics</h3><ul id="composerDiagnostics" class="effect-list" aria-live="polite"></ul></section>
+          </div>
         </section>
 
         <details class="composer-section words-section">
@@ -155,7 +164,7 @@
           <p>For other standalone spells, turn Base Attack off. Removing the last attack-like Shape restores your saved Base Attack preference.</p>
           <p>Only a single Source with Base Attack and no other Words gets the Smite AP exception. Multiple Sources each cost 1 AP.</p>
           <p>Names use readable localized components in fixed order; weapon Sources are slash-separated. Alternative incantations use invented short prefix words as tracker flavor, not canonical rules.</p>
-          <p>Word effects are working drafts. Shape combinations depend on the fiction and table agreement; this composer does not decide their compatibility.</p>
+          <p>Tracker ruling: each Mana or Dust spent adds +1 potential; Shape delivery is layered and area resistance uses total selected Word count.</p>
           <div class="word-toolbar"><button id="clearWordsButton" class="text-button" type="button">Clear words</button></div>
           <div id="wordCategories"></div>
         </details>
