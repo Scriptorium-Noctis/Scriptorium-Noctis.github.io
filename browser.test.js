@@ -121,7 +121,7 @@ for (const width of [1280, 390]) test(`Chromium smoke (${width}px): damage, cumu
       composerMode='focus';selectedGlyphs.add('shape:bolt');renderComposer();renderGlyphs();
       check(document.querySelector('#actionName').textContent==='Precision Lightning Fire Bolt','clean focus spell name');
       check(document.querySelector('#actionMetrics strong').textContent==='4','focus spell costs all selected Glyph AP');
-      check([...document.querySelectorAll('#actionMetrics strong')][1].textContent==='4','resource potential');
+      check([...document.querySelectorAll('#actionMetrics strong')][1].textContent==='5','resource potential includes Bolt focused-application bonus');
       check(!document.querySelector('#composerWeapon').disabled&&document.querySelector('#useFocusButton').getAttribute('aria-pressed')==='true','weapon remains selectable as focus');
       check(!document.querySelector('#actionEffects').textContent.includes('Impact:'),'focus mode ignores weapon impact');
       check(!document.querySelector('#actionIncantation').hidden,'alternative incantation visible');
@@ -142,14 +142,14 @@ for (const width of [1280, 390]) test(`Chromium smoke (${width}px): damage, cumu
       check(document.querySelector('#resolutionSummary').textContent.includes('Very Hard 10'),'Hold Still does not reduce target resistance');
       selectedGlyphs=new Set(['source:fire','shape:bolt']);composerMode='attack';renderGlyphs();renderComposer();
       check(document.querySelector('#composerValidation').textContent.includes('Basic Attack cannot be combined'),'Basic Attack plus Shaping Glyph invalid');
-      click('#useFocusButton');click('#clearGlyphsButton');
+      click('#useFocusButton');click('#clearComposerButton');
       check(document.querySelector('#useFocusButton').getAttribute('aria-pressed')==='true','focus mode remains explicit after clearing Glyphs');
       click('#includeAttackButton');click('#masteryGlyphGrid [data-key="disarming"]');click('#masteryGlyphGrid [data-key="knockback"]');
       check(document.querySelector('#actionEffects').textContent.includes('20 m'),'knockback uses total potential');
       check(document.querySelector('#actionEffects').textContent.includes('drops a held item'),'Disarming effect');
       check([...document.querySelectorAll('#guidePane dd')].some(el=>el.textContent.startsWith('1 AP · +1 potential. On a failed enemy Brace, knock')),'complete Knockback guide text');
       localeSelect.value='pl';localeSelect.onchange();
-      check(document.querySelector('#damageHelperButton').textContent==='Losowanie ran dla MG','Polish label');
+      check(document.querySelector('#damageHelperButton').textContent==='Pomocnik obrażeń dla MG','Polish label');
       click('#recoveryButton');
       check(document.querySelector('#recoveryTitle').textContent.includes(c.name),'reopened localized recovery');
       check(document.querySelector('#recoveryApply').disabled,'reopened allocation empty');

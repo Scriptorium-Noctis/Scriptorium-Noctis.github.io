@@ -22,6 +22,7 @@ function setup(language='en'){
     const getCharacter=()=>c;
     const t=(s,vars={})=>(LOCALES[language]?.strings[s]??s).replace(/\\{(\\w+)\\}/g,(m,k)=>vars[k]??m);
     const idx=d=>DICE.indexOf(d);
+    const stepUp=(d,n=1,max=100)=>DICE[Math.min(DICE.indexOf(max),DICE.indexOf(d)+n)];
   `+source.slice(source.indexOf('function renderComposerCharacters'),source.indexOf('function setView')),context);
   vm.runInContext("$('#composerWeapon').value='0'",context);
   return {run:code=>vm.runInContext(code,context),node:id=>nodes.get(id),metrics:()=>nodes.get('#actionMetrics').children.map(x=>x.innerHTML),effects:()=>nodes.get('#actionEffects').children.map(x=>x.textContent)};
@@ -30,12 +31,12 @@ function setup(language='en'){
 test('base attack with Power and Precision preserves costs and zero Impact',()=>{
   const h=setup();h.run("selectedAttackMastery=new Set(['power','precision']);renderComposer()");
   assert.match(h.metrics()[0],/>3</);assert.match(h.metrics()[1],/>4</);
-  assert.match(h.metrics()[2],/STR d8/);assert.ok(h.effects().includes('Impact: 0.'));
+  assert.match(h.metrics()[2],/STR d10/);assert.ok(h.effects().includes('Impact: 0.'));
 });
 
 test('Attack Mastery Glyphs use an attack-like Shaping Glyph, spell accuracy, and randomized incantation spelling',()=>{
   const h=setup();h.run("Math.random=()=>0;composerMode='focus';selectedGlyphs=new Set(['source:fire','shape:bolt']);selectedAttackMastery=new Set(['power','dashing']);renderComposer()");
-  assert.match(h.metrics()[0],/>4</);assert.match(h.metrics()[1],/>5</);assert.match(h.metrics()[2],/AUR d12/);
+  assert.match(h.metrics()[0],/>4</);assert.match(h.metrics()[1],/>5</);assert.match(h.metrics()[2],/AUR d20/);
   assert.equal(h.node('#actionName').textContent,'Power Dashing Fire Bolt');
   assert.equal(h.node('#actionIncantation').textContent,'Tor Vesh Firanka Dziahaka');
   assert.equal(h.node('#composerWeapon').disabled,false);
@@ -253,6 +254,23 @@ test('shield is normalized as offhand equipment with mechanical rule metadata',(
   const h=setup();
   assert.equal(h.run("SHIELD_RULES.meleeMissChipIgnored"),true);
   assert.equal(h.run("SHIELD_RULES.rangedDodgeGuarantee"),4);
+});
+
+
+test('Glyph palette exposes cost classes and disables currently unavailable choices',()=>{
+  const h=setup();h.run("renderComposer();renderGlyphs()");
+  const mastery=h.node('#masteryGlyphGrid').children;
+  assert.match(mastery.find(x=>x.dataset.key==='power').className,/cost-ap/);
+  assert.match(mastery.find(x=>x.dataset.key==='mastery:power').className,/cost-dust/);
+  const groups=h.node('#glyphCategories').children;
+  const source=groups[0].children[1].children.find(x=>x.innerHTML.includes('Fire'));
+  const shape=groups[1].children[1].children.find(x=>x.innerHTML.includes('Bolt'));
+  assert.match(source.className,/cost-mana/);
+  assert.equal(source.disabled,false);
+  assert.equal(shape.disabled,true);
+  h.run("selectedGlyphs.add('source:fire');renderGlyphs()");
+  const sources=h.node('#glyphCategories').children[0].children[1].children;
+  assert.ok(sources.filter(x=>!x.attrs?.['aria-pressed']||x.attrs['aria-pressed']==='false').every(x=>x.disabled));
 });
 
 test('Polish composer supplement translates all new wording without replacing existing locale entries',()=>{

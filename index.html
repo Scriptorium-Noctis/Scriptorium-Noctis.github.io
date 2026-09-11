@@ -164,12 +164,6 @@
           <p id="baseAttackNote">Basic Attack uses weapon Accuracy and Impact. Use as Focus does not.</p>
         </section>
 
-        <section class="composer-section">
-          <div class="section-title-row"><h2>Mastery Glyphs</h2><button id="clearComposerButton" class="text-button" type="button">Clear Mastery and Glyphs</button></div>
-          <p>Mastery Glyphs represent trained techniques. Some modify attacks; others modify magic, searching, scrying, or other actions.</p>
-          <div id="masteryGlyphGrid" class="choice-grid"></div>
-        </section>
-
         <section class="composer-section composer-result">
           <span class="eyebrow">Result · Tracker ruling, not canonical</span>
           <h2 id="actionName">Attack</h2>
@@ -188,14 +182,16 @@
           </div>
         </section>
 
-        <details class="composer-section glyphs-section">
-          <summary><strong>Glyphs</strong><span>Build magic, martial techniques, rituals, and utility actions</span></summary>
+        <details class="composer-section glyphs-section" open>
+          <summary><strong>Glyphs</strong><span>Mastery · Source · Shaping</span></summary>
+          <div class="section-title-row"><div><h2>Glyphs</h2><p>Mastery, Source, and Shaping Glyphs use one shared palette.</p></div><button id="clearComposerButton" class="text-button" type="button">Clear Glyphs</button></div>
+          <div class="glyph-cost-legend" aria-label="Glyph cost colors"><span class="cost-swatch cost-ap">AP only</span><span class="cost-swatch cost-mana">1 Mana</span><span class="cost-swatch cost-dust">1 Dust</span><span class="cost-swatch cost-unavailable">Unavailable</span></div>
+          <section class="glyph-category"><h3>Mastery Glyphs</h3><div id="masteryGlyphGrid" class="glyph-grid"></div></section>
           <p>Shaping Glyphs cannot be combined with Basic Attack. Choose Use as Focus when the weapon is only part of the casting fiction.</p>
           <p>Basic Attack and Use as Focus are explicit, mutually exclusive weapon modes.</p>
           <p>Spells may combine multiple Source Glyphs. A Basic Attack can carry only one Source Glyph; that Source becomes Smite, consumes Mana, and adds no AP.</p>
           <p>Glyph metadata supplies localized names, grammatical forms, descriptions, and alternate incantation spellings.</p>
           <p>Mana or Dust adds +1 potential by default, but Glyph metadata may add bonuses or mode/target-specific overrides. Shaping Glyph delivery is layered and area resistance uses total selected Glyph count.</p>
-          <div class="glyph-toolbar"><button id="clearGlyphsButton" class="text-button" type="button">Clear Source / Shaping Glyphs</button></div>
           <div id="glyphCategories"></div>
         </details>
       </div>

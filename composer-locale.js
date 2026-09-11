@@ -125,7 +125,7 @@ window.SIGILRPG_LOCALES.pl.composer = {
     flat:{label:'Płaszczyzna',actionName:'Płaszczyzna',sourceName:'Płaszczyzny'},
 
     negation:{label:'Negacja',actionName:'Negacja',sourceName:'Negacji'},
-    power:{label:'Glif Mocy',actionName:'Glif Mocy',sourceName:'Glifu Mocy'},
+    power:{label:'Słowo Mocy',actionName:'Słowo Mocy',sourceName:'Słowa Mocy'},
     focus:{label:'Glif Skupienia',actionName:'Skupienie',sourceName:'Skupienia'},
     enhancement:{label:'Wzmocnienie',actionName:'Wzmocnienie',sourceName:'Wzmocnienia'},
     ascended:{label:'Wyniesiona energia',actionName:'Wyniesienie',sourceName:'Wyniesienia'},
@@ -216,6 +216,12 @@ Object.assign(window.SIGILRPG_LOCALES.pl.strings, {
   'Attack-related Mastery Glyph. Requires a Basic Attack or an attack-like Shaping Glyph.': 'Glif Mistrzostwa związany z atakiem. Wymaga Ataku podstawowego albo Glifu Kształtowania działającego jak atak.',
   'General Mastery Glyph. It may modify magic, utility, searching, scrying, or another compatible action.': 'Ogólny Glif Mistrzostwa. Może modyfikować magię, działania użytkowe, poszukiwanie, wróżenie lub inną zgodną akcję.',
   'Clear Source / Shaping Glyphs': 'Wyczyść Glify Źródła / Kształtowania',
+  'Mastery, Source, and Shaping Glyphs use one shared palette.': 'Glify Mistrzostwa, Źródła i Kształtowania korzystają z jednej wspólnej palety.',
+  'Mastery · Source · Shaping': 'Mistrzostwo · Źródło · Kształtowanie',
+  'AP only': 'Tylko AP',
+  'Unavailable': 'Niedostępne',
+  '1 Mana': '1 Mana',
+  '1 Dust': '1 Pył',
   'Source Glyphs': 'Glify Źródła',
   'Shaping Glyphs': 'Glify Kształtowania',
   'Shield': 'Tarcza',
@@ -236,7 +242,8 @@ Object.assign(window.SIGILRPG_LOCALES.pl.strings, {
   'Potential breakdown: {parts} = {total}.': 'Rozpiska Potencjału: {parts} = {total}.',
   '{condition}: {glyph} contributes {value} potential instead of {normal}; total potential {total}.': '{condition}: {glyph} wnosi {value} Potencjału zamiast {normal}; łączny Potencjał {total}.',
   'Against undead': 'przeciw nieumarłym',
-  'Focused application': 'Skupione zastosowanie'
+  'Focused application': 'Skupione zastosowanie',
+  'This Mastery Glyph affects spell difficulty and is not available during a Basic Attack.': 'Ten Glif Mistrzostwa wpływa na trudność zaklęcia i jest niedostępny podczas Ataku podstawowego.'
 });
 
 Object.assign(window.SIGILRPG_LOCALES.pl.strings, {
