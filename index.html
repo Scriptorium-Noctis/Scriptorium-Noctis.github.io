@@ -11,7 +11,7 @@
   <header class="app-header">
     <div class="brand-block">
       <span class="eyebrow">SigilRPG</span>
-      <strong id="headerTitle">Roster</strong>
+      <strong id="headerTitle">Initiative</strong>
     </div>
     <div class="header-actions">
       <label class="locale-control">
@@ -26,24 +26,41 @@
   </header>
 
   <main class="shell">
-    <section id="rosterPane" class="roster-pane panel" aria-labelledby="rosterTitle">
+    <section id="initiativePane" class="roster-pane panel" aria-labelledby="initiativeTitle">
       <div class="panel-heading roster-heading">
         <div>
           <span class="eyebrow">Combat</span>
-          <h1 id="rosterTitle">Roster</h1>
+          <h1 id="initiativeTitle">Initiative</h1>
         </div>
         <div class="round-actions">
-          <button id="rosterAddButton" class="button button-subtle" type="button">+ Character</button>
+          <button id="openRosterButton" class="button button-subtle" type="button">+ From roster</button>
           <button id="sortInitiativeButton" class="button button-subtle" type="button">Sort initiative</button>
           <button id="endRoundButton" class="button button-primary" type="button">End round</button>
         </div>
       </div>
 
       <div id="roundSummary" class="round-summary"></div>
-      <div id="rosterList" class="roster-list" aria-live="polite"></div>
+      <div id="initiativeList" class="roster-list" aria-live="polite"></div>
+      <div id="emptyInitiative" class="empty-state">
+        <strong>No characters in initiative</strong>
+        <span>Add locally stored characters from the roster.</span>
+      </div>
+    </section>
+
+    <section id="rosterPane" class="roster-pane panel" aria-labelledby="rosterTitle" hidden>
+      <div class="panel-heading roster-heading">
+        <div>
+          <span class="eyebrow">Local characters</span>
+          <h1 id="rosterTitle">Roster</h1>
+        </div>
+        <div class="round-actions">
+          <button id="rosterAddButton" class="button button-primary" type="button">+ Character</button>
+        </div>
+      </div>
+      <div id="characterRosterList" class="library-list" aria-live="polite"></div>
       <div id="emptyRoster" class="empty-state">
-        <strong>No characters</strong>
-        <span>Add one from a template or create a blank character.</span>
+        <strong>No stored characters</strong>
+        <span>Create one from a template or start from a blank character.</span>
       </div>
     </section>
 
@@ -63,9 +80,15 @@
           <button id="fullHpButton" class="button button-subtle" type="button">GM reset</button>
         </div>
 
-        <section class="detail-section detail-initiative-section mobile-only-flex">
+        <section id="detailInitiativeSection" class="detail-section detail-initiative-section mobile-only-flex">
           <label class="initiative-detail-control"><span>Initiative</span><input id="detailInitiativeInput" type="number" inputmode="numeric"></label>
           <button id="detailEndRoundButton" class="button button-primary" type="button">End round</button>
+        </section>
+        <section id="detailRosterSection" class="detail-section" hidden>
+          <div class="inline-actions">
+            <button id="addToInitiativeButton" class="button button-primary" type="button">Add to initiative</button>
+            <span class="muted">Creates an independent encounter copy. Combat changes do not modify this stored character.</span>
+          </div>
         </section>
 
         <section class="detail-section">
@@ -101,6 +124,7 @@
             </div>
             <div class="inline-actions">
               <button id="addWeaponButton" class="button button-subtle" type="button">+ Weapon</button>
+              <button id="addShieldButton" class="button button-subtle" type="button">+ Shield</button>
               <button id="addArmorButton" class="button button-subtle" type="button">+ Plating</button>
             </div>
           </div>
@@ -126,47 +150,53 @@
           <label class="field-label">Character
             <select id="composerCharacter"></select>
           </label>
-          <label class="field-label">Weapon for Base Attack
+          <label class="field-label">Weapon / focus
             <select id="composerWeapon"></select>
           </label>
-          <button id="includeAttackButton" class="choice-card active" type="button" aria-pressed="true" aria-describedby="baseAttackNote">
-            <strong>Base Attack</strong><span>Include weapon or unarmed attack · 1 AP · 2 potential</span>
-          </button>
-          <p id="baseAttackNote">Base Attack preference is remembered while attack-like Shapes replace it.</p>
+          <div class="composer-mode-toggle" role="group" aria-label="Weapon use">
+            <button id="includeAttackButton" class="choice-card active" type="button" aria-pressed="true" aria-describedby="baseAttackNote">
+              <strong>Basic Attack</strong><span>Use weapon to hit · 1 AP · 2 potential</span>
+            </button>
+            <button id="useFocusButton" class="choice-card" type="button" aria-pressed="false" aria-describedby="baseAttackNote">
+              <strong>Use as Focus</strong><span>Keep weapon in the fiction; ignore its physical stats</span>
+            </button>
+          </div>
+          <p id="baseAttackNote">Basic Attack uses weapon Accuracy and Impact. Use as Focus does not.</p>
         </section>
 
         <section class="composer-section">
-          <div class="section-title-row"><h2>Attack prefixes</h2><button id="clearComposerButton" class="text-button" type="button">Clear prefixes and words</button></div>
-          <p>Prefixes modify a Base Attack or an attack-like Shape.</p>
-          <div id="prefixGrid" class="choice-grid"></div>
+          <div class="section-title-row"><h2>Mastery Glyphs</h2><button id="clearComposerButton" class="text-button" type="button">Clear Mastery and Glyphs</button></div>
+          <p>Mastery Glyphs represent trained techniques. Some modify attacks; others modify magic, searching, scrying, or other actions.</p>
+          <div id="masteryGlyphGrid" class="choice-grid"></div>
         </section>
 
         <section class="composer-section composer-result">
           <span class="eyebrow">Result · Tracker ruling, not canonical</span>
           <h2 id="actionName">Attack</h2>
-          <p id="actionIncantation" hidden></p>
+          <div id="composerValidation" class="composer-validation" role="alert" aria-live="polite" hidden></div>
+          <p id="actionIncantation" class="action-incantation" hidden></p>
           <div id="actionMetrics" class="metric-strip"></div>
           <ul id="actionEffects" class="effect-list" aria-live="polite"></ul>
           <div class="composer-resolution">
             <section><h3>Delivery</h3><p id="deliverySummary">—</p></section>
             <section><h3>Targets / Area</h3><p id="targetsSummary">—</p></section>
             <section><h3>Resolution</h3><p id="resolutionSummary">—</p></section>
-            <section><h3>Source effects</h3><ul id="sourceEffects" class="effect-list"></ul></section>
-            <section><h3>Shape interactions</h3><ul id="shapeInteractions" class="effect-list"></ul></section>
-            <section><h3>Mastery</h3><ul id="masteryEffects" class="effect-list"></ul></section>
+            <section><h3>Source Glyph effects</h3><ul id="sourceEffects" class="effect-list"></ul></section>
+            <section><h3>Shaping Glyph interactions</h3><ul id="shapeInteractions" class="effect-list"></ul></section>
+            <section><h3>Mastery Glyphs</h3><ul id="masteryEffects" class="effect-list"></ul></section>
             <section><h3>Diagnostics</h3><ul id="composerDiagnostics" class="effect-list" aria-live="polite"></ul></section>
           </div>
         </section>
 
-        <details class="composer-section words-section">
-          <summary><strong>Words of Power</strong><span>Compose a spell or add a Source Smite</span></summary>
-          <p>Attack-like Shapes replace Base Attack: no base AP/potential, weapon accuracy/Impact, or Smite discount.</p>
-          <p>For other standalone spells, turn Base Attack off. Removing the last attack-like Shape restores your saved Base Attack preference.</p>
-          <p>Only a single Source with Base Attack and no other Words gets the Smite AP exception. Multiple Sources each cost 1 AP.</p>
-          <p>Names use readable localized components in fixed order; weapon Sources are slash-separated. Alternative incantations use invented short prefix words as tracker flavor, not canonical rules.</p>
-          <p>Tracker ruling: each Mana or Dust spent adds +1 potential; Shape delivery is layered and area resistance uses total selected Word count.</p>
-          <div class="word-toolbar"><button id="clearWordsButton" class="text-button" type="button">Clear words</button></div>
-          <div id="wordCategories"></div>
+        <details class="composer-section glyphs-section">
+          <summary><strong>Glyphs</strong><span>Build magic, martial techniques, rituals, and utility actions</span></summary>
+          <p>Shaping Glyphs cannot be combined with Basic Attack. Choose Use as Focus when the weapon is only part of the casting fiction.</p>
+          <p>Basic Attack and Use as Focus are explicit, mutually exclusive weapon modes.</p>
+          <p>Spells may combine multiple Source Glyphs. A Basic Attack can carry only one Source Glyph; that Source becomes Smite, consumes Mana, and adds no AP.</p>
+          <p>Glyph metadata supplies localized names, grammatical forms, descriptions, and alternate incantation spellings.</p>
+          <p>Mana or Dust adds +1 potential by default, but Glyph metadata may add bonuses or mode/target-specific overrides. Shaping Glyph delivery is layered and area resistance uses total selected Glyph count.</p>
+          <div class="glyph-toolbar"><button id="clearGlyphsButton" class="text-button" type="button">Clear Source / Shaping Glyphs</button></div>
+          <div id="glyphCategories"></div>
         </details>
       </div>
     </section>
@@ -176,9 +206,9 @@
       <div class="guide-layout">
         <article class="guide-card">
           <span class="eyebrow">1 · Build</span>
-          <h2>Prefixes modify one attack</h2>
+          <h2>Mastery Glyphs modify one attack</h2>
           <div class="formula"><span>Attack</span><b>1 AP · 2 potential</b><span>+ Power</span><b>+1 AP · +1 potential</b><span>+ Precision</span><b>+1 AP · +1 potential</b><strong>= 3 AP · 4 potential</strong></div>
-          <p>Prefixes are not separate attacks. Three basic attacks are three independent accuracy rolls and three independent damage chains.</p>
+          <p>Attack Mastery Glyphs are not separate attacks. Three Basic Attacks are three independent accuracy rolls and three independent damage chains.</p>
         </article>
         <article class="guide-card">
           <span class="eyebrow">2 · Resolve</span>
@@ -193,7 +223,7 @@
           <p>Queue wounds during the round. Attribute reductions take effect only after End round, preventing early burst damage from weakening later defenses in the same round.</p>
         </article>
         <article class="guide-card">
-          <span class="eyebrow">Prefixes</span>
+          <span class="eyebrow">Mastery Glyphs</span>
           <h2>Quick reference</h2>
           <dl class="rule-list">
             <div><dt>Power</dt><dd>+1 potential; accuracy die +1 tier.</dd></div>
@@ -215,11 +245,11 @@
             <li>Spellcasting accuracy uses whichever is higher: INT or AUR.</li>
             <li>The wounded attribute follows the injury fiction; it is not automatically the defense that failed.</li>
             <li>Quick remains undefined and is intentionally omitted.</li>
-            <li>Attack-like Shapes replace Base Attack: no base AP/potential, weapon accuracy/Impact, or Smite discount.</li>
-            <li>Only a single Source with Base Attack and no other Words gets the Smite AP exception. Multiple Sources each cost 1 AP.</li>
-            <li>Precision + Lightning + Fire + Bolt = 4 AP, with no Base Attack.</li>
-            <li>Word effects are working drafts. Shape combinations depend on the fiction and table agreement; this composer does not decide their compatibility.</li>
-            <li>Names use readable localized components in fixed order; weapon Sources are slash-separated. Alternative incantations use invented short prefix words as tracker flavor, not canonical rules.</li>
+            <li>Shaping Glyphs cannot be combined with Basic Attack. Choose Use as Focus for weapon-assisted casting fiction.</li>
+            <li>Spells may combine many Source Glyphs. Basic Attack may carry only one, and its Smite costs Mana but no AP.</li>
+            <li>Precision + Lightning + Fire + Bolt = 4 AP while using the weapon as Focus or no weapon at all; Bolt contributes an extra +1 potential for focused application.</li>
+            <li>Glyph effects are working drafts. Shaping combinations depend on the fiction and table agreement; this composer does not decide every compatibility case.</li>
+            <li>Names and incantations use localized Glyph metadata, including alternate spellings.</li>
           </ul>
         </article>
       </div>
@@ -227,19 +257,20 @@
   </main>
 
   <nav class="bottom-nav" aria-label="Primary navigation">
-    <button class="nav-button active" data-view="roster" type="button"><span>☷</span><b>Roster</b></button>
+    <button class="nav-button active" data-view="initiative" type="button"><span>≋</span><b>Initiative</b></button>
+    <button class="nav-button" data-view="roster" type="button"><span>☷</span><b>Roster</b></button>
     <button class="nav-button" data-view="action" type="button"><span>✦</span><b>Actions</b></button>
     <button class="nav-button" data-view="guide" type="button"><span>?</span><b>Guide</b></button>
   </nav>
 
   <dialog id="characterDialog" class="modal">
     <form id="characterForm" method="dialog" class="modal-card">
-      <div class="section-title-row"><div><span class="eyebrow">Roster</span><h2>Add character</h2></div><button class="icon-button" value="cancel" aria-label="Close">×</button></div>
+      <div class="section-title-row"><div><span class="eyebrow">Local roster</span><h2>Add character</h2></div><button class="icon-button" value="cancel" aria-label="Close">×</button></div>
       <div class="template-grid" id="templateGrid"></div>
       <label class="field-label">Name<input id="newCharacterName" maxlength="40" autocomplete="off" placeholder="Character name"></label>
       <label class="field-label compact-field">Copies<input id="newCharacterCount" type="number" min="1" max="20" value="1"></label>
       <div id="newCharacterStats" class="creation-stats"></div>
-      <div class="modal-actions"><button class="button" value="cancel" type="button" id="cancelCharacterButton">Cancel</button><button class="button button-primary" type="submit">Add to roster</button></div>
+      <div class="modal-actions"><button class="button" value="cancel" type="button" id="cancelCharacterButton">Cancel</button><button class="button button-primary" type="submit">Save to roster</button></div>
     </form>
   </dialog>
 
