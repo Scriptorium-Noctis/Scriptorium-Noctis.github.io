@@ -294,7 +294,7 @@ window.SIGILRPG_LOCALES = {
       "Flatten another Shape into a plane, surface, wall, or floor.": "Spłaszcz inny Kształt do płaszczyzny, powierzchni, ściany lub podłogi.",
       "Negation": "Negacja",
       "Invert, suppress, or cancel the selected Source or Shape where fiction permits.": "Odwróć, stłum lub anuluj wybrane Źródło albo Kształt, jeśli pozwala na to fikcja.",
-      "Power Glyph": "Glif Mocy",
+      "Power Word": "Słowo Mocy",
       "Make the spell verbal-only, deliver it through hearing, and raise its power die one tier.": "Spraw, by zaklęcie było wyłącznie werbalne, działało przez słuch i zwiększało swoją kość mocy o jeden poziom.",
       "Focus Glyph": "Glif Skupienia",
       "Gain advantage on the Spell Casting Check.": "Zyskaj przewagę do testu rzucania zaklęcia.",

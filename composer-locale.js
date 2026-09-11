@@ -50,7 +50,7 @@ Object.assign(window.SIGILRPG_LOCALES.pl.strings, {
   'Weapon or unarmed hit carries the selected Sources.': 'Trafienie bronią lub bez broni przenosi wybrane Źródła.',
   'One attack target; weapon range applies.': 'Jeden cel ataku; obowiązuje zasięg broni.',
   'Roll weapon accuracy. Source Smite is part of that hit.': 'Wykonaj rzut celności broni. Smite Źródła jest częścią tego trafienia.',
-  'Power Glyph delivers the payload through hearing.': 'Glif Mocy dostarcza efekt przez słuch.',
+  'Power Word delivers the payload through hearing.': 'Słowo Mocy dostarcza efekt przez słuch.',
   'Anything that can hear within audible reach; compatible Shapes manifest on each listener.': 'Wszystko, co słyszy w zasięgu dźwięku; zgodne Kształty objawiają się przy każdym słuchaczu.',
   'Targets use area resistance; no spell-accuracy roll unless a carried primary Shape specifically attacks one target.': 'Cele używają oporu obszarowego; bez rzutu celności zaklęcia, chyba że przenoszony Kształt główny atakuje konkretny cel.',
   'Area/container Shapes place the payload directly; no attack roll.': 'Kształty obszarowe/pojemniki umieszczają efekt bezpośrednio; bez rzutu ataku.',

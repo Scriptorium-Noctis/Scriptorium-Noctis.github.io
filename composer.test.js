@@ -289,3 +289,21 @@ test('Polish composer supplement translates all new wording without replacing ex
     const text=match[1].trim();if(text)assert.ok(strings[text],`Missing Polish text: ${text}`);
   }
 });
+
+test('Power Attack and Dovinus each raise Accuracy one tier and stack',()=>{
+  const h=setup();
+  h.run("selectedAttackMastery=new Set(['power']);renderComposer()");
+  assert.match(h.metrics()[2],/STR d10/);
+  h.run("selectedGlyphs=new Set(['mastery:power']);renderComposer()");
+  assert.match(h.metrics()[2],/STR d12/);
+});
+
+test('casting-check-only Mastery Glyphs are unavailable during Basic Attack while Dovinus remains available',()=>{
+  const h=setup();h.run('renderComposer();renderGlyphs()');
+  const buttons=h.node('#masteryGlyphGrid').children;
+  assert.equal(buttons.find(x=>x.dataset.key==='mastery:ascended').disabled,true);
+  assert.equal(buttons.find(x=>x.dataset.key==='mastery:hold').disabled,true);
+  assert.equal(buttons.find(x=>x.dataset.key==='mastery:power').disabled,false);
+  assert.equal(h.run("GLYPHS.mastery.find(x=>x.id==='power').name"),'Power Word');
+  assert.equal(h.run("GLYPHS.mastery.find(x=>x.id==='power').accuracyTierBonus"),1);
+});
